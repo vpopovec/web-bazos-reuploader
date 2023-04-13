@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Ads
+{% endblock %}
+
+{% block main %}
+    <div class="mb-3">
+        <ul class="list-unstyled">
+            {% for message in messages %}
+                {% if message.success %}
+                    <li class="success"> {{ message.text }} </li>
+                {% else %}
+                    <li class="fail"> {{ message.text }} </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

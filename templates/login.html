@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <form action="/login" method="post" onsubmit="loading();">
+        <p>
+            Please fill out your details. After submitting you will receive an SMS code from bazos.
+        </p>
+        <div class="mb-3">
+            <label for="email">
+                Email
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="mail@gmail.com" type="text">
+            </label>
+        </div>
+        <div class="mb-3">
+            <label for="tel-num">
+                Telephone number
+                <input class="form-control mx-auto w-auto" id="tel-num" name="tel-num" placeholder="0940 123 456" type="tel">
+            </label>
+        </div>
+        <!-- <div class="mb-3">
+            <label for="ad-psw">
+                Ad password
+                <input class="form-control mx-auto w-auto" id="ad-psw" name="ad-psw" placeholder="password" type="password">
+                <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+            </label>
+        </div> -->
+        <button class="btn btn-primary" type="submit">Log In</button>
+    </form>
+    <script>
+        $(".toggle-password").click(function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            let input = document.querySelector("input#ad-psw");
+            input.type = input.type == "password" ? "text" : "password"
+            });
+    </script>
+{% endblock %}
