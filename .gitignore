@@ -3,3 +3,4 @@ __pycache__
 .git
 inzeraty/*
 flask_session
+!bazos_categories.json
