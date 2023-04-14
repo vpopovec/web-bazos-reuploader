@@ -17,9 +17,6 @@ Session(app)
 # Configure session for backend
 bazos_session = requests.Session()
 
-# Configure CS50 Library to use SQLite database
-# db = SQL("sqlite:///finance.db")
-
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
