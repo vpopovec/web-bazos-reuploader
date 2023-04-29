@@ -15,6 +15,13 @@ Bazos reuploader is a tool for reuploading your advertisements on bazos.sk site.
 2. Client enters SMS key, reuploader then downloads and deletes all their ads
 3. Reuploader uploads all downloaded ads to bazos
 
+## Implementation details
+Instead of using a database to store information I opted for files. The reason behind that is that I have to store pictures which would probably make the database large.
+### Session
+I use requests session to preserve cookies after a request. In addition to that I store the session cookies in a binary file so that next time the client uses this app, they don't have to authorize anymore. 
+### Ad password
+I have noticed that bazos platform doesn't really care about the ad password (even though they demand it for upload/delete/modify operations). All authorization is handled via "bkod" ("bcode" in english) cookie, which is granted after autorizing session via SMS code. 
+
 ## Project design
 First I was considering using PWA for this project, since I've already built a working backend for reuploading bazos ads. 
 I ran into some issue, I wasn't familiar with typescript so I decided to use flask. 
