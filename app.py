@@ -17,6 +17,9 @@ Session(app)
 # Configure session for backend
 bazos_session = requests.Session()
 
+# Initialize dirs
+make_init_folders()
+
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
