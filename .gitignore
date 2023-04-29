@@ -4,3 +4,4 @@ __pycache__
 inzeraty/*
 flask_session
 !bazos_categories.json
+!sessions
