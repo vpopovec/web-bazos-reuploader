@@ -10,7 +10,8 @@ import glob
 """
 
 ADS_DIR = 'inzeraty'
-with open('bazos_categories.json', encoding='utf8') as rf:
+from reuploader.helpers import ROOT_DIR
+with open(f'{ROOT_DIR}/reuploader/bazos_categories.json', encoding='utf8') as rf:
     CATEGORIES = json.load(rf)
 
 
@@ -57,13 +58,13 @@ def upload_photos(ad_path, info):
     return ids
 
 
-def upload_ad(session, flask_session, ad_id):
+def upload_ad(session, flask_session, ad_path):
     try:
-        ad_path = f"{ADS_DIR}{os.path.sep}{ad_id}"
+        # ad_path = f"{ROOT_DIR}{os.path.sep}{ADS_DIR}{os.path.sep}{ad_id}"
         with open(f'{ad_path}{os.path.sep}info.json', encoding='utf8') as rf:
             info = json.load(rf)
     except FileNotFoundError:
-        print(f"Ad number {ad_id} not found")
+        print(f"Ad {ad_path} not found")
         return
 
     boundary = '----WebKitFormBoundarycyOShvTm9V30Zg0B'
@@ -110,9 +111,7 @@ def upload_ad(session, flask_session, ad_id):
         ('jmeno', info['advertiser']),
         ('telefoni', flask_session["tel_num"]),
         ('maili', flask_session["email"]),
-        # ('heslobazar', flask_session["ad_psw"]),
         ('heslobazar', '123456'),
-        # ('werfhgfda', 'regsgtr'),
         ('sdfweh', 'awegdfg'),
         ('Submit', 'Odoslať')
     ]

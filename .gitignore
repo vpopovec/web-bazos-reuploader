@@ -5,3 +5,7 @@ inzeraty/*
 flask_session
 !bazos_categories.json
 !sessions
+.idea/
+instance/
+.env
+.coverage

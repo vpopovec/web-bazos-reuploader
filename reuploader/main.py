@@ -1,12 +1,12 @@
 import json
 import aiohttp
 import asyncio
-from helpers import *
+from reuploader.helpers import *
 
 ADS_DIR = 'inzeraty'
 
 
-def download_ad(session, url):
+def download_ad(session, url, ad_path):
     create_directory(ADS_DIR)
 
     authority = re.findall(r"https://([^/]*)/", url)[0]
@@ -34,7 +34,7 @@ def download_ad(session, url):
             'price': txt.split('Cena:')[-1].split('</b>')[0].split('<b>')[-1].strip().replace(' ', ''),
             'img_links': [i.replace('t/', '/') for i in img_previews]}
 
-    ad_path = f"{ADS_DIR}{os.path.sep}{ad_id}"
+    # ad_path = f"{ROOT_DIR}{os.path.sep}{ADS_DIR}{os.path.sep}{ad_id}"
     create_directory(ad_path)
 
     with open(f'{ad_path}{os.path.sep}info.json', 'w', encoding='utf8') as wf:
@@ -52,14 +52,13 @@ def download_ad(session, url):
     return True
 
 
-def delete_ad(session, url, flask_session):
+def delete_ad(session, url):
     authority = re.findall(r"https://([^/]*)/", url)[0]
     ad_id = get_id_from_link(url)
 
     session.get(f'https://{authority}/zmazat/{ad_id}.php', headers=get_headers(authority))
 
     data = {
-        # 'heslobazar': flask_session["ad_psw"],
         'heslobazar': "123456",
         'idad': ad_id,
         'administrace': 'Zmazať',

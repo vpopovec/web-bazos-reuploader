@@ -9,7 +9,8 @@
         <ul class="list-unstyled">
             {% for message in messages %}
                 {% if message.success %}
-                    <li class="success"> {{ message.text }} </li>
+<!--                    <li class="success"> {{ message.text }} </li>-->
+                    <li>{{message.dt}} <span class="success">{{ message.text }}</span></li>
                 {% else %}
                     <li class="fail"> {{ message.text }} </li>
                 {% endif %}

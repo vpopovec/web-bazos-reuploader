@@ -1,10 +1,8 @@
 import pickle
 import re
-import traceback
-import requests
 import os
-import requests
 from flask import render_template
+ROOT_DIR = f"{os.path.abspath(__file__ + '/../../')}"
 
 
 def get_headers(authority='www.bazos.sk', ref=''):
@@ -68,7 +66,7 @@ def get_fn_from_tel(tel_num):
 
 def load_session_cookies(session, tel_num):
     try:
-        with open(f'sessions/{get_fn_from_tel(tel_num)}.txt', 'rb') as f:
+        with open(f'{ROOT_DIR}/sessions/{get_fn_from_tel(tel_num)}.txt', 'rb') as f:
             session.cookies.update(pickle.load(f))
     except FileNotFoundError:
         print("FILE NOT FOUND IN LOAD SESSION")
@@ -76,7 +74,7 @@ def load_session_cookies(session, tel_num):
 
 def save_session(session, tel_num):
     try:
-        with open(f'sessions/{get_fn_from_tel(tel_num)}.txt', 'wb') as f:
+        with open(f'{ROOT_DIR}/sessions/{get_fn_from_tel(tel_num)}.txt', 'wb') as f:
             pickle.dump(session.cookies, f)
     except FileNotFoundError:
         print("FILE NOT FOUND IN SAVE SESSION")
@@ -115,6 +113,6 @@ def apology(message, code=400):
 
 def make_init_folders():
     try:
-        os.mkdir('sessions')
+        os.mkdir(f'{ROOT_DIR}/sessions')
     except FileExistsError:
         pass
