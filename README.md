@@ -30,3 +30,6 @@ I *struggled* a little with this project. My most frustrating bug to date was mi
 
 ## Motivation
 We decided to move out from a rented house, but we had bought all the furniture to furnish the house, including appliances! With dozens of pieces of furniture which we needed to sell, I decided to program a tool for reuploading all the adverts on an advertising platform, because after a few days our furniture gut pushed into the far back in a search. Thanks to this tool our ads gained exposure and we were able to sell almost everything.
+
+## Next Milestone
+I am hosting this app on render.com, in order to preserve sessions without a persistent disk, connect to cloud storage (create Azure SA, restructure API calls, set remote path as environment var)

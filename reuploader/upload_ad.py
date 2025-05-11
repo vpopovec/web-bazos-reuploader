@@ -67,7 +67,7 @@ def upload_ad(session, flask_session, ad_path):
         print(f"Ad {ad_path} not found")
         return
 
-    boundary = '----WebKitFormBoundarycyOShvTm9V30Zg0B'
+    boundary = '----WebKitFormBoundaryAD87BcSQ0bDtwXmX'
     headers = {
         'authority': info['authority'],
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -112,7 +112,7 @@ def upload_ad(session, flask_session, ad_path):
         ('telefoni', flask_session["tel_num"]),
         ('maili', flask_session["email"]),
         ('heslobazar', '123456'),
-        ('sdfweh', 'awegdfg'),
+        ('tergdgs', 'gdfgreewr'),
         ('Submit', 'Odoslať')
     ]
     photo_ids = upload_photos(ad_path, info)

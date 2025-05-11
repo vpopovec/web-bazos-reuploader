@@ -33,6 +33,8 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
+    app.app_context().push()  # Maybe call at the bottom?
+
     from . import db
     db.init_app(app)
 
@@ -40,5 +42,6 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(welcome.bp)
     app.register_blueprint(ads.bp)
+
 
     return app
