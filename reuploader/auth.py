@@ -43,7 +43,7 @@ def login():
 
         except Exception as e:
             traceback.print_exc()
-            return apology(f"{e=} {traceback.print_exc()}")
+            return apology(f"{e} {traceback.print_exc()}")
 
     return render_template("login.html")
 
