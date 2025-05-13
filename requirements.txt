@@ -4,3 +4,4 @@ requests
 aiohttp
 gunicorn
 pytest
+python-dotenv
