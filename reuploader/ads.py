@@ -46,7 +46,7 @@ def reupload(resp):
             result_messages.append({"success": 0, "text": f"Couldn't remove ad number {get_id_from_link(ad_link)}"})
 
     for ad_id in ads_to_upload:
-        ad_path = os.path.join(ROOT_DIR, ADS_DIR, ad_id)  # Maybe os.path.join() ?
+        ad_path = f"{ADS_DIR}/{ad_id}"
         resp, ad_title = upload_ad(b_session, session, ad_path)
         success = 1 if 'Inzerát bol vložený' in resp else 0
         SUCCESS_MSG = {0: "FAILED", 1: "SUCCESSFUL"}

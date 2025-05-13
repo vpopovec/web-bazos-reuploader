@@ -1,8 +1,58 @@
 import pickle
 import re
 import os
+import io
+import requests
+import xml.etree.ElementTree as ET
 from flask import render_template
+from dotenv import load_dotenv
 ROOT_DIR = f"{os.path.abspath(__file__ + '/../../')}"
+CONTAINER_URL = 'https://bazosreuploader.blob.core.windows.net/render'
+load_dotenv()
+sas_token = os.getenv('AZURE_SAS_TOKEN')
+
+
+def get_blob_url(upload_path):
+    return f"{CONTAINER_URL}/{upload_path}?{sas_token}"
+
+
+def list_blobs_by_prefix(container_url, directory_prefix):
+    list_url = f"{container_url}?restype=container&comp=list&prefix={directory_prefix}&{sas_token}"
+    headers = {
+        "x-ms-version": "2021-08-06"
+    }
+
+    # Send GET request with SAS token
+    response = requests.get(list_url, headers=headers)
+
+    blob_names = []
+    # Parse and print blob names
+    if response.status_code == 200:
+        root = ET.fromstring(response.content)
+        blobs = root.findall(".//Blob")
+        print(f"Blobs under '{directory_prefix}':")
+        for blob in blobs:
+            name = blob.find("Name").text
+            blob_names.append(name)
+            print(f"- {name}")
+    else:
+        print(f"❌ Failed to list blobs in {directory_prefix}: {response.status_code}")
+        print(response.text)
+    return blob_names
+
+
+def read_file_bytes_from_azure(blob_url):
+    return requests.get(blob_url).content
+
+
+def upload_file_to_azure(file_data, blob_url):
+    # with open(file_path, 'rb') as file_data:
+    headers = {
+        'x-ms-blob-type': 'BlockBlob'  # Mandatory header to tell Azure what type of blob you're uploading
+    }
+    response = requests.put(blob_url, headers=headers, data=file_data)
+    if response.status_code == 200:
+        print('File was uploaded')
 
 
 def get_headers(authority='www.bazos.sk', ref=''):
@@ -24,10 +74,6 @@ def get_headers(authority='www.bazos.sk', ref=''):
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
     }
 
-
-def create_directory(directory):
-    if not os.path.exists(f"{directory}"):
-        os.mkdir(f"{directory}")
 
 
 def get_id_from_link(url):
@@ -69,13 +115,30 @@ def load_session_cookies(session, tel_num):
         with open(f'{ROOT_DIR}/sessions/{get_fn_from_tel(tel_num)}.txt', 'rb') as f:
             session.cookies.update(pickle.load(f))
     except FileNotFoundError:
-        print("FILE NOT FOUND IN LOAD SESSION")
+        print("Session not found on disk, check the cloud")
+        blob_url = get_blob_url(f"sessions/{get_fn_from_tel(tel_num)}.txt")
+        response = requests.head(blob_url)
+
+        if response.status_code == 200:
+            print("✅ Blob exists.")
+            response = requests.get(blob_url)
+            session.cookies.update(pickle.load(io.BytesIO(response.content)))
+        elif response.status_code == 404:
+            print("❌ Blob does not exist.")
+        else:
+            print(f"⚠️ Unexpected status: {response.status_code}")
+            print(response.text)
 
 
 def save_session(session, tel_num):
     try:
+        # Save pickled cookies locally
         with open(f'{ROOT_DIR}/sessions/{get_fn_from_tel(tel_num)}.txt', 'wb') as f:
             pickle.dump(session.cookies, f)
+        # Upload pickled cookies to Azure
+        blob_url = get_blob_url(f"sessions/{get_fn_from_tel(tel_num)}.txt")
+        with open(f'{ROOT_DIR}/sessions/{get_fn_from_tel(tel_num)}.txt', "rb") as data:
+            upload_file_to_azure(data, blob_url)
     except FileNotFoundError:
         print("FILE NOT FOUND IN SAVE SESSION")
 
@@ -111,8 +174,8 @@ def apology(message, code=400):
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
 
-def make_init_folders():
-    try:
-        os.mkdir(f'{ROOT_DIR}/sessions')
-    except FileExistsError:
-        pass
+# def make_init_folders():
+#     try:
+#         os.mkdir(f'{ROOT_DIR}/sessions')
+#     except FileExistsError:
+#         pass

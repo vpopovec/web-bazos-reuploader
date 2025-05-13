@@ -7,7 +7,6 @@ ADS_DIR = 'inzeraty'
 
 
 def download_ad(session, url, ad_path):
-    create_directory(ADS_DIR)
 
     authority = re.findall(r"https://([^/]*)/", url)[0]
 
@@ -34,11 +33,8 @@ def download_ad(session, url, ad_path):
             'price': txt.split('Cena:')[-1].split('</b>')[0].split('<b>')[-1].strip().replace(' ', ''),
             'img_links': [i.replace('t/', '/') for i in img_previews]}
 
-    # ad_path = f"{ROOT_DIR}{os.path.sep}{ADS_DIR}{os.path.sep}{ad_id}"
-    create_directory(ad_path)
-
-    with open(f'{ad_path}{os.path.sep}info.json', 'w', encoding='utf8') as wf:
-        json.dump(info, wf)
+    blob_url = get_blob_url(f"{ADS_DIR}/{ad_id}/info.json")
+    upload_file_to_azure(json.dumps(info), blob_url)
 
     images = asyncio.run(download_images(info['img_links']))
     images = [i for i in images if i]
@@ -47,8 +43,8 @@ def download_ad(session, url, ad_path):
 
     for url, img_content in images:
         file_name = url.split('img/')[1].split('/')[0] + ".jpg"
-        with open(f"{ad_path}{os.path.sep}{file_name}", mode='wb') as wf:
-            wf.write(img_content)
+        blob_url = get_blob_url(f"{ADS_DIR}/{ad_id}/{file_name}")
+        upload_file_to_azure(img_content, blob_url)
     return True
 
 

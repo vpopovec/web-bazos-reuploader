@@ -3,7 +3,7 @@ import os
 import json
 import re
 import urllib3
-import glob
+from reuploader.helpers import get_blob_url, list_blobs_by_prefix, CONTAINER_URL, read_file_bytes_from_azure
 
 """
     Bazos changes one field and value in insert.php call every few months...
@@ -36,7 +36,7 @@ def upload_pic(pic_path, info):
     file_name = pic_path.split(os.path.sep)[-1]
 
     fields = {
-        "file[0]": (file_name, open(f'{pic_path}', 'rb').read(), 'image/jpeg'),
+        "file[0]": (file_name, read_file_bytes_from_azure(get_blob_url(pic_path)), 'image/jpeg'),
     }
 
     boundary = '----WebKitFormBoundary1GVHUvw40yqeLBTz'
@@ -50,8 +50,8 @@ def upload_pic(pic_path, info):
 
 
 def upload_photos(ad_path, info):
-    pic_paths = glob.glob(f"{ad_path}{os.path.sep}*")
-    pic_paths = [p for p in pic_paths if re.fullmatch(rf'{ad_path}{os.path.sep}\d+\.\w+', p)]
+    pic_paths = list_blobs_by_prefix(CONTAINER_URL, ad_path)
+    pic_paths = [p for p in pic_paths if re.fullmatch(rf'{ad_path}/\d+\.\w+', p)]
     ids = []
     for pic_p in pic_paths:
         ids.append(upload_pic(pic_p, info))
@@ -60,10 +60,8 @@ def upload_photos(ad_path, info):
 
 def upload_ad(session, flask_session, ad_path):
     try:
-        # ad_path = f"{ROOT_DIR}{os.path.sep}{ADS_DIR}{os.path.sep}{ad_id}"
-        with open(f'{ad_path}{os.path.sep}info.json', encoding='utf8') as rf:
-            info = json.load(rf)
-    except FileNotFoundError:
+        info = requests.get(get_blob_url(f"{ad_path}/info.json")).json()
+    except:
         print(f"Ad {ad_path} not found")
         return
 
