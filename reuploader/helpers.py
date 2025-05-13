@@ -123,6 +123,7 @@ def load_session_cookies(session, tel_num):
             print("✅ Blob exists.")
             response = requests.get(blob_url)
             session.cookies.update(pickle.load(io.BytesIO(response.content)))
+            return True  # session_loaded_from_cloud
         elif response.status_code == 404:
             print("❌ Blob does not exist.")
         else:
@@ -171,7 +172,7 @@ def apology(message, code=400):
                          ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
             s = s.replace(old, new)
         return s
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+    return render_template("apology.html", top=code, bottom=escape(message), msg=message), code
 
 
 # def make_init_folders():
