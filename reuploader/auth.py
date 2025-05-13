@@ -27,7 +27,7 @@ def login():
         session["tel_num"] = tel_num
 
         b_session = current_app.config['B_SESSION']
-        load_session_cookies(b_session, tel_num)
+        session_loaded_from_cloud = load_session_cookies(b_session, tel_num)
 
         try:
             ads_resp = get_my_ads(b_session)
@@ -36,6 +36,11 @@ def login():
 
                 # save_session(b_session, session['tel_num'])  # EXTRA
                 return redirect("/sms-confirm")
+
+            if session_loaded_from_cloud:
+                # save user to DB
+                save_user_to_db()
+
             save_session(b_session, session["tel_num"])
 
             reupload(ads_resp)

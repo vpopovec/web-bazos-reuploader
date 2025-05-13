@@ -123,6 +123,7 @@ def load_session_cookies(session, tel_num):
             print("✅ Blob exists.")
             response = requests.get(blob_url)
             session.cookies.update(pickle.load(io.BytesIO(response.content)))
+            return True  # session_loaded_from_cloud
         elif response.status_code == 404:
             print("❌ Blob does not exist.")
         else:
