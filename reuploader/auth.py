@@ -65,7 +65,7 @@ def sms_confirm():
 
         except Exception as e:
             traceback.print_exc()
-            return apology(f"{e}")
+            return apology(f"smsconfirm {e} {traceback.print_exc()}")
 
     return render_template("smsconfirm.html")
 
