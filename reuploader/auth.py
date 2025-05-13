@@ -42,8 +42,8 @@ def login():
             return redirect(url_for('ads.result'))
 
         except Exception as e:
-            traceback.print_exc()
-            return apology(f"{e} {traceback.print_exc()}")
+            # traceback.print_exc()
+            return apology(f"{e} {traceback.format_exc()}")
 
     return render_template("login.html")
 
@@ -64,8 +64,8 @@ def sms_confirm():
             return redirect(url_for('ads.result'))
 
         except Exception as e:
-            traceback.print_exc()
-            return apology(f"smsconfirm {e} {traceback.print_exc()}")
+            # traceback.print_exc()
+            return apology(f"smsconfirm {e} {traceback.format_exc()}")
 
     return render_template("smsconfirm.html")
 
